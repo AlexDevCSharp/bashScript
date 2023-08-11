@@ -1,1 +1,1 @@
-# bashScript
+I recomment to use my req.txt file but requiremnt from project. There are version's conflict so I remove it by new versions.
