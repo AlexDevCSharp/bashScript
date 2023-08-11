@@ -1,15 +1,17 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 # 1. Install python-3.7.2 and python-pip
+python3 --version
 sudo apt-get update
 sudo apt-get install -y python3.7 python3-pip
+sudo apt-get install python3-pip
 
 # 2. Install mysql-8.0.15
 sudo apt-get install -y mysql-server
 
 # 3. Setup virtual environment
 # Install virtual environment
-sudo pip3 install virtualenv
+sudo pip install virtualenv
 
 # Make a directory
 mkdir envs
@@ -24,11 +26,20 @@ source envs/bin/activate
 echo "Setup complete. Virtual environment activated."
 
 # 4. Clone git repository
+sudo apt install git
 git clone "https://github.com/Manisha-Bayya/simple-django-project.git"
 
 # 5. Install requirements
 cd simple-django-project/
-pip install -r requirements.txt
+
+#it was error installing mysqlclient so you can install it from here
+sudo apt-get install mysql-server
+sudo apt-get install libmysqlclient-dev
+#and now requirements
+#It is better to use my requirements because there is conflict of versions
+#mine
+pip install -r req.txt 
+#pip install -r requirements.txt
 
 # 6. Load sample data into MySQL
 # Open MySQL shell
@@ -41,7 +52,10 @@ mysql> exit;
 
 # 7. Edit project settings
 # Open settings file in your preferred text editor, e.g., vim
-vim panorbit/settings.py
+apt install vim         # version 2:8.2.3995-1ubuntu2.10
+
+#uncommend it if it needs
+#vim panorbit/settings.py
 
 # ... Edit the settings file as instructed ...
 
@@ -49,14 +63,14 @@ vim panorbit/settings.py
 
 # 8. Run the server
 # Make migrations
-python manage.py makemigrations
-python manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py migrate
 
 # Rebuild the index for the search feature
-python manage.py rebuild_index
+python3 manage.py rebuild_index
 
 # Run the server
-python manage.py runserver 0:8001
+python3 manage.py runserver 0:8001
 
 echo "Server is up and running. Access it at http://localhost:8001"
 
