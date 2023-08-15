@@ -1,18 +1,33 @@
 #!/usr/bin/bash
 
+# Function to install packages using apt-get
+install_packages() {
+    local packages=("$@")
+    for package in "${packages[@]}"; do
+        sudo apt-get install -y "$package"
+    done
+}
+
+# List of packages to install
+declare -a apt_packages=(
+    "python3.7"
+    "python3-pip"
+    "mysql-server"
+    "git"
+    "libmysqlclient-dev"
+    "vim"
+	"virtualenv"
+)
+
 # 1. Install python-3.7.2 and python-pip
 python3 --version
 sudo apt-get update
-sudo apt-get install -y python3.7 python3-pip
-sudo apt-get install python3-pip
+install_packages "${apt_packages[@]:0:2}"
 
 # 2. Install mysql-8.0.15
-sudo apt-get install -y mysql-server
+install_packages "${apt_packages[2]}"
 
 # 3. Setup virtual environment
-# Install virtual environment
-sudo pip install virtualenv
-
 # Make a directory
 mkdir envs
 
@@ -26,35 +41,28 @@ source envs/bin/activate
 echo "Setup complete. Virtual environment activated."
 
 # 4. Clone git repository
-sudo apt install git
+install_packages "${apt_packages[3]}"
 git clone "https://github.com/Manisha-Bayya/simple-django-project.git"
 
 # 5. Install requirements
 cd simple-django-project/
-
-#it was error installing mysqlclient so you can install it from here
-sudo apt-get install mysql-server
-sudo apt-get install libmysqlclient-dev
-#and now requirements
-#It is better to use my requirements because there is conflict of versions
-#mine
-pip install -r req.txt 
-#pip install -r requirements.txt
+install_packages "${apt_packages[@]:4:2}"
+pip install -r req.txt
 
 # 6. Load sample data into MySQL
 # Open MySQL shell
-mysql -u <mysql-user> -p
+# mysql -u <mysql-user> -p
 
 # Inside MySQL shell, load the sample data
 # Replace <absolute-path-to-file> with the actual path to the 'world.sql' file
-mysql> source <absolute-path-to-file>/world.sql
-mysql> exit;
+# mysql> source <absolute-path-to-file>/world.sql
+# mysql> exit;
 
 # 7. Edit project settings
 # Open settings file in your preferred text editor, e.g., vim
-apt install vim         # version 2:8.2.3995-1ubuntu2.10
+# apt install vim
 
-#uncommend it if it needs
+#uncomment it if it needs
 #vim panorbit/settings.py
 
 # ... Edit the settings file as instructed ...
@@ -73,8 +81,3 @@ python3 manage.py rebuild_index
 python3 manage.py runserver 0:8001
 
 echo "Server is up and running. Access it at http://localhost:8001"
-
-
-#Remember to replace placeholders like <mysql-user>, <mysql-password>, <mysql-host>, <mysql-port>, <your-email>, <your-email-password>, and <absolute-path-to-file> with actual values as needed.
-
-#After saving this script to a file, make it executable as before and run it to complete the remaining steps of your project setup.
